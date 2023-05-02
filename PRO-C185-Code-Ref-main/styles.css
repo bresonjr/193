@@ -1,0 +1,26 @@
+#interface {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+  }
+  
+  #interface h1 {
+    font-size: 24px;
+    margin: 0;
+  }
+  
+  #interface label {
+    margin-left: 20px;
+  }
+  
+  #interface input[type="file"] {
+    display: none;
+  }
+  

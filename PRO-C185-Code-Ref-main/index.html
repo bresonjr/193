@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Moonrider</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v6.1.0/dist/aframe-extras.min.js"></script>
+  </head>
+  <body>
+    <a-scene >
+      <div id="scoreboard">Score: 0</div>
+
+      <a-assets>
+        <audio id="song" src="XXXTENTACION-changes.mp3" preload="auto" onended="playNextSong()"></audio>
+        <audio id="song2" src="song2.mp3" preload="auto" onended="playNextSong()"></audio>
+        <img id="sky" src="astralsky.webp">
+      </a-assets>
+      <a-sky src="#sky"></a-sky>
+      <a-entity id="ground" geometry="primitive: plane; width: 1000; height: 1000" material="color:violet; metalness: 0.1; roughness: 0.8" rotation="-90 0 0" position="0 -1.5 0"></a-entity>
+      <a-entity id="car" position="0 1.6 -5" rotation="0 180 0" camera look-controls="enabled: false">
+        <a-box color="#ff0000" height="1" width="2" depth="4"></a-box>
+          <camera></camera>
+      </a-entity>
+      <a-light type="directional" color="#FFF" intensity="0.8" position="-1 1 0"></a-light>
+      <a-light type="ambient" color="#FFF" intensity="0.2"></a-light>
+      <a-entity id="song-holder" sound="src: #song; autoplay: true; loop: false;"></a-entity>
+      <a-entity id="beat-holder" beat-detector="onBeat: beatHandler;"></a-entity>
+    
+      
+        <!-- Trees -->
+        <a-entity id="trees" position="0 0 -20" rotation="0 0 0" scale="10 10 10"></a-entity>
+
+        <a-entity position="-35 1 -95">
+          <a-box width="30" height="90" depth="20" color="gray"></a-box>
+          <a-box position="2 2 0" width="2" height="4" depth="1" color="white"></a-box>
+          <a-box position="-2 2 0" width="2" height="4" depth="1" color="white"></a-box>
+          <a-box position="0 6 0" width="2" height="2" depth="1" color="white"></a-box>
+        </a-entity>
+        
+        <a-entity position="35 0.5 -105">
+          <a-box width="20" height="70" depth="20" color="gray"></a-box>
+          <a-box position="2 2 0" width="2" height="4" depth="1" color="white"></a-box>
+          <a-box position="-2 2 0" width="2" height="4" depth="1" color="white"></a-box>
+          <a-box position="0 6 0" width="2" height="2" depth="1" color="white"></a-box>
+        </a-entity>
+        
+        
+  
+        <a-entity position="0 0.01 0">
+          <a-box rotation="-90 0 0" width="20" height="1000" color="#333"></a-box>
+          <a-entity id="obstacles"></a-entity>
+        </a-entity>
+        
+        <script>
+            // Define the tree geometry and material
+          var treeGeometry = "primitive: box; width: 0.5; height: 2; depth: 1";
+          var trunkMaterial = "color:#8b4513";
+          var leavesMaterial = "color:#006400";
+          
+          // Define the spacing between trees and the number of trees to create
+          var spacing = 10;
+          var numTrees = 10;
+          
+          // Loop through the number of trees and create a new tree entity at the appropriate position
+          for (var i = 0; i < numTrees; i++) {
+            var x = (i - (numTrees / 2)) * spacing;
+            var z = -20;
+            
+            var tree = document.createElement("a-entity");
+            tree.setAttribute("position", x + " 0 " + z);
+            
+            var trunk = document.createElement("a-box");
+            trunk.setAttribute("position", "0 1 0");
+            trunk.setAttribute("material", trunkMaterial);
+            trunk.setAttribute("geometry", treeGeometry);
+            tree.appendChild(trunk);
+            
+            var leaves = document.createElement("a-cone");
+            leaves.setAttribute("position", "0 3 0");
+            leaves.setAttribute("material", leavesMaterial);
+            leaves.setAttribute("radius-bottom", "1");
+            leaves.setAttribute("radius-top", (0.03 - (0.02 * i / numTrees)).toFixed(2));
+            leaves.setAttribute("height", "3");
+            tree.appendChild(leaves);
+            
+            document.querySelector("#trees").appendChild(tree);
+          }
+
+          // Add keyboard controls for the car.
+          var car = document.querySelector('#car');
+          var carSpeed = 0.80;
+        
+          document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowUp') {
+              car.object3D.position.z += carSpeed;
+            }
+            else if (event.key === 'ArrowDown') {
+              car.object3D.position.z -= carSpeed;
+            }
+            else if (event.key === 'ArrowLeft') {
+              car.object3D.position.x += carSpeed;
+            }
+            else if (event.key === 'ArrowRight') {
+              car.object3D.position.x -= carSpeed;
+            }
+          });
+        
+          var player = document.querySelector('#player');
+          var beatHolder = document.querySelector('#beat-holder');
+          var ground = document.querySelector('#ground');
+          var currentSong = document.querySelector('#song');
+          var nextSong = document.querySelector('#song2');
+          var obstacles = document.querySelector('#obstacles');
+          var obstacleInterval = 2000; // time in milliseconds between obstacle creations
+          var lastObstacleTime = 0; // time when the last obstacle was created
+        
+          // Move the player forward on each beat.
+          function beatHandler() {
+            player.object3D.position.z -= 0.1;
+          
+          }
+          
+          // Play the next song when the current song ends.
+          function playNextSong() {
+            currentSong.pause();
+            currentSong.currentTime = 0;
+            currentSong = nextSong;
+            currentSong.play();
+          }
+        
+          // Start playing the first song.
+          currentSong.play();
+          
+        </script>
+        
+</body>
+</html>
